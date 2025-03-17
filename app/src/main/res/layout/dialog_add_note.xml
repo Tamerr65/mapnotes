@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Titel"
+
+        app:counterEnabled="true"
+        app:counterMaxLength="30"
+        app:endIconMode="clear_text"
+
+        app:boxStrokeColor="@color/color10"
+        app:hintTextColor="@color/color10"
+        app:cursorColor="@color/iconColor"
+        app:startIconDrawable="@drawable/ic_title_24"
+
+        android:theme="@style/EditTextThemeOverlay"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/Hint"
+            android:id="@+id/title_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+
+            android:maxLength="30"
+            android:singleLine="true"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Beschreibung"
+
+
+        app:counterEnabled="true"
+        app:counterMaxLength="400"
+        app:endIconMode="clear_text"
+
+        app:boxStrokeColor="@color/color10"
+        app:hintTextColor="@color/color10"
+        app:cursorColor="@color/iconColor"
+        app:startIconDrawable="@drawable/ic_description_24"
+
+        android:theme="@style/EditTextThemeOverlay"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/Hint"
+            android:id="@+id/desc_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:singleLine="false"
+
+            android:minLines="4"
+            android:maxLength="400"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</LinearLayout>

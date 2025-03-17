@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.75</item>
+
+        <item name="android:background">@drawable/rounded_corners_background</item>
+        <item name="android:backgroundTint">@color/color30</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
+
+    <style name="EditTextThemeOverlay" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="colorControlActivated">@color/iconColor</item>
+    </style>
+
+    <style name="EditTextThemeOverlayDropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="colorControlActivated">@color/iconColor</item>
+    </style>
+
+
+    <style name="Headline1">
+        <item name="android:fontFamily">@font/roboto_black</item>
+        <item name="android:textSize">34sp</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+    <style name="Headline2">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+
+    <style name="Headline3">
+        <item name="android:fontFamily">@font/roboto_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+
+    <style name="Hint">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorHint">@color/subTextColor</item>
+    </style>
+
+
+    <style name="Body1">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+    <style name="Body2">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/subTextColor</item>
+    </style>
+
+    <style name="Body3">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/subTextColor</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+    <style name="ClickText">
+        <item name="android:fontFamily">@font/roboto_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color10</item>
+    </style>
+
+    <style name="Tags">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/subTextColor</item>
+    </style>
+
+</resources>

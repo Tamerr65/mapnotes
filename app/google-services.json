@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "659888020916",
+    "project_id": "mapnotesapp-ac715",
+    "storage_bucket": "mapnotesapp-ac715.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659888020916:android:275daa3dd9a5168342e6e1",
+        "android_client_info": {
+          "package_name": "com.app.mapnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0p0tZSWpRxL5yVF1Qfosnd9gpMBXyCrA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
