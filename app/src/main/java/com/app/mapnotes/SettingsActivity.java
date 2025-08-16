@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         versiontxt = findViewById(R.id.version_text);
 
-
+        // Navigation zurück zur Hauptansicht
         backButton.setOnClickListener(v -> {
 
             Intent intent = new Intent(SettingsActivity.this, MapsActivity.class);
@@ -60,6 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         });
 
+        // Klick-Optionen für die Einstellungen
         changePasswordOption.setOnClickListener(v ->
                 startActivity(new Intent(SettingsActivity.this, ChangePasswordActivity.class))
         );
@@ -85,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    // Dialog zum Abmelden mit Bestätigung
     private void showLogoutConfirmationDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.CustomDialog)
                 .setTitle("Abmelden")
@@ -104,6 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.textColor));
     }
 
+    // Dialog zur Auswahl des Dark-Modes (An, Aus, Systemstandard)
     private void showCustomDarkModeDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.CustomDialog)
                 .setTitle("Dunkler Modus")
@@ -138,6 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.textColor));
     }
 
+    // Dialog zum Bestätigen der Konto-Löschung
     private void showDeleteAccountConfirmationDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this, R.style.CustomDialog)
                 .setTitle("Konto löschen")
@@ -152,6 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.accentRed));
     }
 
+    // Löscht zuerst alle Notizen des Nutzers und anschließend das Benutzerkonto
     private void deleteAccount() {
         if (user != null) {
             String userId = user.getUid();

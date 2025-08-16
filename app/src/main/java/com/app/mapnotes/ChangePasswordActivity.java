@@ -29,6 +29,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
+        // Grundkonfiguration und Initialisierung von Firebase/Auth und UI-Elementen
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.color60));
 
         mAuth = FirebaseAuth.getInstance();
@@ -41,8 +42,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         setSaveButtonEnabled(false);
 
+        // Back-Button schließt die Activity
         backBtn.setOnClickListener(v -> finish());
 
+        // Überwachung der Texteingaben, um Button zu aktivieren/deaktivieren
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -57,6 +60,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         etOldPassword.addTextChangedListener(textWatcher);
         etNewPassword.addTextChangedListener(textWatcher);
 
+        // Klick auf Speichern löst Passwortänderung aus
         btnSave.setOnClickListener(v -> {
             String oldPassword = etOldPassword.getText().toString().trim();
             String newPassword = etNewPassword.getText().toString().trim();
@@ -70,6 +74,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
 
+    // Prüft ob beide Eingabefelder gefüllt sind und passt Button-Status an
     private void updateSaveButtonState() {
         boolean enable = !etOldPassword.getText().toString().trim().isEmpty() &&
                 !etNewPassword.getText().toString().trim().isEmpty();
@@ -77,12 +82,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
 
+    // Aktiviert/deaktiviert den Button und ändert Sichtbarkeit
     private void setSaveButtonEnabled(boolean enabled) {
         btnSave.setEnabled(enabled);
         btnSave.setAlpha(enabled ? 1.0f : 0.5f);
     }
 
 
+    // Führt eigentliche Passwortänderung durch: prüft altes Passwort und setzt neues
     private void changePassword(String oldPassword, String newPassword) {
         setSaveButtonEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
@@ -95,6 +102,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             return;
         }
 
+        // Erst mit altem Passwort authentifizieren, danach neues Passwort setzen
         String email = currentUser.getEmail();
         mAuth.signInWithEmailAndPassword(email, oldPassword)
                 .addOnCompleteListener(task -> {
@@ -112,6 +120,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                     }
                                 });
                     } else {
+                        // Falsches altes Passwort
                         setSaveButtonEnabled(true);
                         Toast.makeText(ChangePasswordActivity.this, "Anmeldung fehlgeschlagen: "
                                 + task.getException().getMessage(), Toast.LENGTH_SHORT).show();

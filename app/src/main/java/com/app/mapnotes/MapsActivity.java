@@ -39,6 +39,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        // Nutzer-Authentifizierung prüfen, Firestore initialisieren und Map laden
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -63,10 +64,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        // Initialisiert die Karte, lädt Marker und setzt Standardansicht
         mMap = googleMap;
         loadMarkersFromFirestore();
 
-        LatLng startPoint = new LatLng(51.1657, 10.4515); // Deutschland-Koordinaten
+        LatLng startPoint = new LatLng(52.4856, 13.3377); // HWR-Koordinaten
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 6));
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
@@ -80,6 +82,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    // Dialog zum Hinzufügen einer neuen Notiz mit Titel, Beschreibung und Kartenposition
     private void showAddNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialog);
         View view = getLayoutInflater().inflate(R.layout.dialog_add_note, null);
@@ -119,6 +122,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    // Speichert eine neue Notiz in Firestore mit koordinaten
     private void saveNoteToFirestore(String title, String description, double lat, double lng) {
         Map<String, Object> note = new HashMap<>();
         note.put("title", title);
@@ -137,6 +141,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 );
     }
 
+    // Lädt alle Marker des Nutzers aus Firestore und zeigt sie auf der Karte an
     private void loadMarkersFromFirestore() {
         db.collection("notes")
                 .whereEqualTo("userId", userId)
@@ -165,6 +170,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
+    // Zeigt einen Dialog zum Bearbeiten oder Löschen einer Notiz an
     private void showEditDeleteDialog(Marker marker, String docId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialog);
         builder.setTitle(marker.getTitle())
@@ -187,6 +193,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .show();
     }
 
+    // Dialog zum Bearbeiten einer bestehenden Notiz
     private void showEditNoteDialog(Marker marker, String docId) {
         View view = getLayoutInflater().inflate(R.layout.dialog_add_note, null);
         EditText titleInput = view.findViewById(R.id.title_input);
@@ -237,6 +244,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    // Eigene Ansicht für Marker-Infofenster (Titel + Beschreibung)
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         @Override
         public View getInfoWindow(@NonNull Marker marker) {

@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> login());
         registerTextView.setOnClickListener(v -> register());
 
+        // Wenn Nutzer bereits eingeloggt ist -> direkt zur Karte
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
             startActivity(new Intent(this, MapsActivity.class));
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Führt den Login-Prozess aus (inkl. Validierung, Firebase-Anmeldung und Fehlerbehandlung)
     private void login() {
         setInputsEnabled(false);
         showLoading(true);
@@ -93,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    // Prüft Eingaben auf Vollständigkeit und gültiges E-Mail-Format
     private boolean isValidInput(String email, String password) {
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, getString(R.string.enter_email_password), Toast.LENGTH_SHORT).show();
@@ -107,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    // Aktiviert/deaktiviert Eingabefelder und Button
     private void setInputsEnabled(boolean enabled) {
         loginButton.setEnabled(enabled);
         emailInput.setEnabled(enabled);
@@ -114,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    // Zeigt oder versteckt Lade-Overlay und ProgressBar
     private void showLoading(boolean loading) {
         ProgressBar progressBar = findViewById(R.id.progress_bar);
         View dimOverlay = findViewById(R.id.dim_overlay);

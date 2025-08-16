@@ -46,11 +46,13 @@ public class RegisterActivity extends AppCompatActivity {
         loginTextView.setOnClickListener(v -> login());
     }
 
+    // Wechsel zurück zum Login-Screen
     private void login() {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 
+    // Registrierungsprozess mit Validierung, Firebase-Auth und Benutzerprofil-Update
     private void register() {
         String name = nameInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();
@@ -100,6 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    // Aktiviert alle Eingabefelder und den Button
     private void setInputsEnabled(boolean enabled) {
         nameInput.setEnabled(enabled);
         emailInput.setEnabled(enabled);
@@ -108,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setEnabled(enabled);
     }
 
+    // Überprüfung der Eingaben (Name, Email, Passwort)
     private boolean validateInput(String name, String email, String password, String confirmPassword) {
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "Bitte Namen eingeben", Toast.LENGTH_SHORT).show();
