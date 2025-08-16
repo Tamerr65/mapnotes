@@ -2,7 +2,6 @@ package com.app.mapnotes;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -12,8 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,7 +58,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         settings.setOnClickListener(view -> {
             startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
             finish();
-        } );
+        });
     }
 
     @Override
@@ -73,8 +70,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 6));
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+
+        // Klick auf Infofenster -> Bearbeiten/Löschen-Dialog
         mMap.setOnInfoWindowClickListener(marker -> {
-            // Optional: Detailansicht öffnen
+            String docId = (String) marker.getTag();
+            if (docId != null) {
+                showEditDeleteDialog(marker, docId);
+            }
         });
     }
 
@@ -98,7 +100,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(getResources().getColor(R.color.color10));
 
-
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             String title = titleInput.getText().toString().trim();
             String desc = descInput.getText().toString().trim();
@@ -114,10 +115,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             LatLng position = mMap.getCameraPosition().target;
             saveNoteToFirestore(title, desc, position.latitude, position.longitude);
-            Toast.makeText(this, "Notiz wurde gespeichert", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
-
     }
 
     private void saveNoteToFirestore(String title, String description, double lat, double lng) {
@@ -129,7 +128,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         note.put("userId", userId);
         note.put("timestamp", FieldValue.serverTimestamp());
 
-        db.collection("notes").add(note);
+        db.collection("notes").add(note)
+                .addOnSuccessListener(documentReference ->
+                        Toast.makeText(this, "Notiz wurde gespeichert", Toast.LENGTH_SHORT).show()
+                )
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Fehler beim Speichern", Toast.LENGTH_SHORT).show()
+                );
     }
 
     private void loadMarkersFromFirestore() {
@@ -137,6 +142,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .whereEqualTo("userId", userId)
                 .addSnapshotListener((value, error) -> {
                     if (error != null) return;
+
+                    mMap.clear(); // verhindert doppelte Marker
 
                     for (DocumentSnapshot doc : Objects.requireNonNull(value).getDocuments()) {
                         Double lat = doc.getDouble("lat");
@@ -146,17 +153,91 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         if (lat != null && lng != null) {
                             LatLng position = new LatLng(lat, lng);
-                            mMap.addMarker(new MarkerOptions()
+                            Marker marker = mMap.addMarker(new MarkerOptions()
                                     .position(position)
                                     .title(title)
                                     .snippet(desc));
+                            if (marker != null) {
+                                marker.setTag(doc.getId()); // Firestore-Dokument-ID merken
+                            }
                         }
                     }
                 });
     }
 
-    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+    private void showEditDeleteDialog(Marker marker, String docId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialog);
+        builder.setTitle(marker.getTitle())
+                .setItems(new String[]{"Bearbeiten", "Löschen"}, (dialog, which) -> {
+                    if (which == 0) {
+                        showEditNoteDialog(marker, docId);
+                    } else if (which == 1) {
+                        db.collection("notes").document(docId)
+                                .delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    marker.remove();
+                                    Toast.makeText(this, "Notiz gelöscht", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Fehler beim Löschen", Toast.LENGTH_SHORT).show()
+                                );
+                    }
+                })
+                .setNegativeButton("Abbrechen", null)
+                .show();
+    }
 
+    private void showEditNoteDialog(Marker marker, String docId) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_add_note, null);
+        EditText titleInput = view.findViewById(R.id.title_input);
+        EditText descInput = view.findViewById(R.id.desc_input);
+
+        titleInput.setText(marker.getTitle());
+        descInput.setText(marker.getSnippet());
+
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.CustomDialog)
+                .setView(view)
+                .setTitle("Notiz bearbeiten")
+                .setPositiveButton("Speichern", null)
+                .setNegativeButton("Abbrechen", null)
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(getResources().getColor(R.color.textColor));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(getResources().getColor(R.color.color10));
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String newTitle = titleInput.getText().toString().trim();
+            String newDesc = descInput.getText().toString().trim();
+
+            if (newTitle.isEmpty()) {
+                titleInput.setError("Titel darf nicht leer sein");
+                return;
+            }
+            if (newDesc.isEmpty()) {
+                descInput.setError("Beschreibung darf nicht leer sein");
+                return;
+            }
+
+            db.collection("notes").document(docId)
+                    .update("title", newTitle, "description", newDesc)
+                    .addOnSuccessListener(aVoid -> {
+                        marker.setTitle(newTitle);
+                        marker.setSnippet(newDesc);
+                        marker.showInfoWindow();
+                        Toast.makeText(this, "Notiz aktualisiert", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Fehler beim Speichern", Toast.LENGTH_SHORT).show()
+                    );
+        });
+    }
+
+    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         @Override
         public View getInfoWindow(@NonNull Marker marker) {
             View view = getLayoutInflater().inflate(R.layout.info_window, null);
@@ -175,5 +256,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return null;
         }
     }
-
 }
