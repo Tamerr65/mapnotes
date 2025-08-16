@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText nameInput, emailInput, passwordInput;
+    private EditText nameInput, emailInput, passwordInput, confirmPasswordInput;
     private Button registerButton;
     private TextView loginTextView;
     private FirebaseAuth auth;
@@ -36,11 +36,11 @@ public class RegisterActivity extends AppCompatActivity {
         nameInput = findViewById(R.id.name_input);
         emailInput = findViewById(R.id.email_input);
         passwordInput = findViewById(R.id.password_input);
+        confirmPasswordInput = findViewById(R.id.confirm_password_input);
         registerButton = findViewById(R.id.register_btn);
         loginTextView = findViewById(R.id.login_btn);
 
         auth = FirebaseAuth.getInstance();
-
 
         registerButton.setOnClickListener(v -> register());
         loginTextView.setOnClickListener(v -> login());
@@ -55,8 +55,9 @@ public class RegisterActivity extends AppCompatActivity {
         String name = nameInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim();
+        String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
-        if (!validateInput(name, email, password)) {
+        if (!validateInput(name, email, password, confirmPassword)) {
             return;
         }
 
@@ -103,10 +104,11 @@ public class RegisterActivity extends AppCompatActivity {
         nameInput.setEnabled(enabled);
         emailInput.setEnabled(enabled);
         passwordInput.setEnabled(enabled);
+        confirmPasswordInput.setEnabled(enabled);
         registerButton.setEnabled(enabled);
     }
 
-    private boolean validateInput(String name, String email, String password) {
+    private boolean validateInput(String name, String email, String password, String confirmPassword) {
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "Bitte Namen eingeben", Toast.LENGTH_SHORT).show();
             return false;
@@ -125,6 +127,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (password.length() < 6) {
             Toast.makeText(this, "Das Passwort muss mindestens 6 Zeichen lang sein", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(this, "Passwörter stimmen nicht überein", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
